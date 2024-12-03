@@ -144,7 +144,7 @@ class Score:
     """
     撃ち落とした爆弾の数を表示するクラス
     """
-    def __init__(self,point):
+    def __init__(self,point:int):
         """
         表示するスコアの書体等の設定
         """
@@ -153,6 +153,9 @@ class Score:
         self.txt = self.fonto.render(f"スコア：{self.point}", 0, (0, 0, 255))
 
     def update(self, screen: pg.Surface):
+        """
+        スコアを更新して表示する関数
+        """
         self.txt = self.fonto.render(f"スコア：{self.point}", 0, (0, 0, 255))
         screen.blit(self.txt, [100, HEIGHT-50])
 
