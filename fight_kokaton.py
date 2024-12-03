@@ -152,9 +152,10 @@ class Score:
     """
     撃ち落とした爆弾の数を表示するクラス
     """
-    def __init__(self,point:int):
+    def __init__(self, point:int):
         """
         表示するスコアの書体等の設定
+        引数：スコアの点数
         """
         self.fonto = pg.font.SysFont("hgp創英角ﾎﾟｯﾌﾟ体", 30)
         self.point = point
@@ -163,9 +164,10 @@ class Score:
     def update(self, screen: pg.Surface):
         """
         スコアを更新して表示する関数
+        引数：スクリーン
         """
         self.txt = self.fonto.render(f"スコア：{self.point}", 0, (0, 0, 255))
-        screen.blit(self.txt, [100, HEIGHT-50])
+        screen.blit(self.txt, [100, HEIGHT - 50])
 
 class Explosion:
     """
@@ -174,6 +176,8 @@ class Explosion:
     def __init__(self, rct:list[float, float], life: int):
         """
         爆発を表示する関数
+        引数1：爆弾の座標
+        引数2：爆発を表示する時間
         """
         ep_img = pg.image.load("fig/explosion.gif")
         ep_img0 = pg.transform.flip(ep_img, True, True)
@@ -184,10 +188,11 @@ class Explosion:
     def update(self, screen: pg.Surface):
         """
         爆発経過時間の計算と表示する画像の変更
+        引数：スクリーン
         """
         if self.life > 0:
             self.life -= 1
-            screen.blit(self.ep_lst[self.life // 10 % 2], self.rct)
+            screen.blit(self.ep_lst[self.life//10 % 2], self.rct)
 
 def main():
     pg.display.set_caption("たたかえ！こうかとん")
@@ -219,7 +224,7 @@ def main():
                 bird.change_img(8, screen)
                 fonto = pg.font.Font(None, 50)
                 txt = fonto.render("Game Over", True, (255, 0, 0))
-                screen.blit(txt, [WIDTH//2-150, HEIGHT//2])
+                screen.blit(txt, [WIDTH//2 - 150, HEIGHT//2])
                 pg.display.update()
                 time.sleep(1)
                 return
@@ -243,7 +248,7 @@ def main():
             bomb.update(screen)
         beams = [beam for beam in beams if beam is not None]
         for j,beam in enumerate(beams):
-            if check_bound(beam.rct) != (True,True):
+            if check_bound(beam.rct) != (True, True):
                 beams[j]=None
             beam.update(screen)
         exp_lst = [exp for exp in exp_lst if exp.life > 0]
