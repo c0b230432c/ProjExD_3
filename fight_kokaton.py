@@ -159,6 +159,27 @@ class Score:
         self.txt = self.fonto.render(f"スコア：{self.point}", 0, (0, 0, 255))
         screen.blit(self.txt, [100, HEIGHT-50])
 
+class Explosion:
+    """
+    爆発に関するクラス
+    """
+    def __init__(self, rct:list[float, float], life: int):
+        """
+        爆発を表示する関数
+        """
+        ep_img = pg.image.load("fig/explosion.gif")
+        ep_img0 = pg.transform.flip(ep_img, True, True)
+        self.ep_lst = [ep_img, ep_img0]
+        self.rct = rct
+        self.life = life
+
+    def update(self, screen: pg.Surface):
+        """
+        爆発経過時間の計算と表示する画像の変更
+        """
+        if self.life > 0:
+            self.life -= 1
+            screen.blit(self.ep_lst[self.life//10 % 2], self.rct)
 
 def main():
     pg.display.set_caption("たたかえ！こうかとん")
@@ -168,6 +189,7 @@ def main():
     bombs=[Bomb((255, 0, 0), 10) for _ in range(NUM_OF_BOMBS)]
     score=Score(0)
     beams=[]
+    exp_lst=[]
     beam = None  
     # Beam(bird)  # ビームインスタンス生成
     # bomb2 = Bomb((0, 0, 255), 20)    
@@ -200,21 +222,25 @@ def main():
                     if beam.rct.colliderect(bomb.rct):  # ビームが爆弾を撃ち落としたら
                         beams[j] = None
                         bombs[i] = None
-                        score.point+=1
+                        score.point += 1
                         bird.change_img(6, screen)
+                        exp_lst.append(Explosion(bomb.rct, 100))
                         pg.display.update()
 
         key_lst = pg.key.get_pressed()
         bird.update(key_lst, screen)
         # beam.update(screen)
-        bombs=[bomb for bomb in bombs if bomb is not None]
+        bombs = [bomb for bomb in bombs if bomb is not None]
         for bomb in bombs:
             bomb.update(screen)
-        beams=[beam for beam in beams if beam is not None]
+        beams = [beam for beam in beams if beam is not None]
         for j,beam in enumerate(beams):
             if check_bound(beam.rct) != (True,True):
                 beams[j]=None
             beam.update(screen)
+        exp_lst = [exp for exp in exp_lst if exp.life > 0]
+        for exp in exp_lst:
+            exp.update(screen)
         # bomb2.update(screen)
         score.update(screen)
         pg.display.update()
